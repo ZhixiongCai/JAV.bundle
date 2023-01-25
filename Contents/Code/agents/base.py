@@ -44,7 +44,7 @@ class QueryAgent(Base):
     def make_result(self, agent_id, name, year=None, score=100, thumb=None):
         return MetadataSearchResult(
             id="{0}.{1}".format(self.get_name(), agent_id),
-            name=name,
+            name="{0}: {1}".format(self.get_name(), name),
             year=year,
             score=score,
             lang=self.lang,
