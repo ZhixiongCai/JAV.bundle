@@ -10,15 +10,16 @@ import requests
 from .base import ID_PATTERN, LibraryAgent
 
 
-    def with_default(default):
-        def wrapper(func):
-            def _func(*args, **kwargs):
-                try:
-                    return func(*args, **kwargs)
-                except:
-                    return default
-            return _func
-        return wrapper
+def with_default(default):
+    def wrapper(func):
+        def _func(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except:
+                return default
+        return _func
+    return wrapper
+
 
 class JAVBus(LibraryAgent):
     def get_name(self):
@@ -39,7 +40,8 @@ class JAVBus(LibraryAgent):
         html = resp.content.decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
         try:
-            bango = soup.find("div", "movie").find_all("p")[0].find_all("span")[1].text.strip()
+            ele = self.find_ele(soup, "識別碼:")
+            bango = ele.find_all("span")[1].text.strip()
         except AttributeError:
             Log("an exception occurred: " + url)
             return
@@ -68,76 +70,63 @@ class JAVBus(LibraryAgent):
             "studio": self.get_studio(data),
             "duration": self.get_duration(data),
             "genres": self.get_genres(data),
-            "rating": self.get_rating(data),
             "posters": self.get_posters(data),
             "art": self.get_thumbs(data)
         }
 
+    @with_default("")
     def get_studio(self, data):
         ele = self.find_ele(data, "製作商:")
         if ele:
-            return ele.
-        return data.find("div", "movie").find_all("p")[3].find("a").text.strip()
+            return ele.find("a").text.strip()
 
     def get_original_title(self, data):
-        title = soup.find("div", "container").find("h3").text.strip()
+        title = data.find("div", "container").find("h3").text.strip()
         return title[title.find(' ') + 1:]
 
+    @with_default(None)
     def get_originally_available_at(self, data):
-        text = soup.find("div", "movie").find_all("p")[1].text
+        text = self.find_ele(data, "發行日期:").text
         match = re.search("\d+[-]\d+[-]\d+", text)
-        try:
-            if match:
-                return datetime.datetime.strptime(match.group(0), "%Y-%m-%d")
-        except ValueError:
-            pass
+        return datetime.datetime.strptime(match.group(0), "%Y-%m-%d")
 
+    @with_default([])
     def get_roles(self, data):
         return [
             {"name": e.text.strip()}
-            for div in soup.find("div", "movie").find("ul").find_all("div", "star-name")
+            for div in data.find("div", "movie").find("ul").find_all("div", "star-name")
             for e in div.find_all("a")
         ]
 
+    @with_default(None)
     def get_duration(self, data):
-        match = re.search("\d+", soup.find("div", "movie").find_all("p")[2].text)
+        ele = self.find_ele(data, "長度:")
+        match = re.search("\d+", ele.text)
         return int(match.group(0))*60*1000
 
+    @with_default([])
     def get_directors(self, data):
-        ele = self.find_ele(data, "監督:")
-        if ele and ele.find("a"):
-            return [{"name": ele.find("a").text.strip()}]
-        return []
+        ele = self.find_ele(data, "導演:")
+        return [{"name": ele.find("a").text.strip()}]
 
+    @with_default([])
     def get_genres(self, data):
-        ele = self.find_ele(data, "ジャンル:")
-        if ele:
-            return [ele.text.strip() for ele in ele.findAll("a")]
-        return []
+        return [
+            span.find("a").text.strip()
+            for span in data.find("div", "movie").find_all("span", "genre")
+        ]
 
-    def get_rating(self, data):
-        ele = self.find_ele(data, "平均評価:")
-        if ele:
-            try:
-                return float(ele.find("span", "score").text.strip("()"))
-            except ValueError:
-                pass
-
+    @with_default(None)
     def get_posters(self, data):
-        javlibrary_thumb = data.find("img", {"id": "video_jacket_img"})
-        if javlibrary_thumb and javlibrary_thumb["src"]:
-            src = javlibrary_thumb["src"]
-            if not src.startswith("http"):
-                src = "https:" + src
-            return [src.replace("pl.", "ps.")]
+        ele = data.find("a", "bigImage")
+        link = "https://javbus.com" + ele["href"]
+        return [link.replace("_b", "")]
 
+    @with_default(None)
     def get_thumbs(self, data):
-        javlibrary_thumb = data.find("img", {"id": "video_jacket_img"})
-        if javlibrary_thumb and javlibrary_thumb["src"]:
-            src = javlibrary_thumb["src"]
-            if not src.startswith("http"):
-                src = "https:" + src
-            return [src]
+        ele = data.find("a", "bigImage")
+        link = "https://javbus.com" + ele["href"]
+        return [link]
 
     def crawl(self, agent_id):
         url = "https://www.javbus.com/" + agent_id
@@ -153,8 +142,6 @@ class JAVBus(LibraryAgent):
             if single_info.find("span").text.strip() == title:
                 return single_info
 
-      
-      
     s_requests = None
     s_cloudscraper = None
 
