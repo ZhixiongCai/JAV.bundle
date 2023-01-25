@@ -15,7 +15,7 @@ def with_default(default):
         def wrap(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except Exception e:
+            except Exception as e:
                 Log("JAVBus: " + e.with_traceback())
                 return default
         return wrap
