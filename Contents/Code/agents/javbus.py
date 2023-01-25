@@ -15,7 +15,8 @@ def with_default(default):
         def wrap(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception e:
+                Log("JAVBus: " + e.with_traceback())
                 return default
         return wrap
     return wrapper
@@ -42,10 +43,11 @@ class JAVBus(LibraryAgent):
         try:
             ele = self.find_ele(soup, "識別碼:")
             bango = ele.find_all("span")[1].text.strip()
+            title = self.get_original_title(soup)
         except AttributeError:
             Log("an exception occurred: " + url)
             return
-        results.append(self.make_result(bango, bango))
+        results.append(self.make_result(bango, title))
         return results
 
     def get_metadata(self, metadata_id):
