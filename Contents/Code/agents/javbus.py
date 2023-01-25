@@ -59,7 +59,7 @@ class JAVBus(LibraryAgent):
                 "Got an unexpected response for {0}".format(metadata_id))
 
         return {
-            "movie_id": re.split(r"\s", title)[0],
+            "movie_id": agent_id,
             "agent_id": agent_id,
             "title": title,
             "originally_available_at": self.get_originally_available_at(data),
