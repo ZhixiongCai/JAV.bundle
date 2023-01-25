@@ -178,6 +178,7 @@ class AgentCollection(object):
             agents.Pondo(lang),
             agents.TokyoHot(lang),
             agents.JAVLibrary(lang),
+            agents.JAVBus(lang),
             agents.AVE(lang),
             agents.GFriend(lang),
         ]
