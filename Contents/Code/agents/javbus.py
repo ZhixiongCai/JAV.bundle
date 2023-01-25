@@ -16,7 +16,6 @@ def with_default(default):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                Log("JAVBus: " + e.with_traceback())
                 return default
         return wrap
     return wrapper
@@ -113,6 +112,7 @@ class JAVBus(LibraryAgent):
         return [
             span.find("a").text.strip()
             for span in data.find("div", "movie").find_all("span", "genre")
+            if span.find("a")
         ]
 
     @with_default(None)
