@@ -12,12 +12,12 @@ from .base import ID_PATTERN, LibraryAgent
 
 def with_default(default):
     def wrapper(func):
-        def _func(*args, **kwargs):
+        def wrap(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except:
                 return default
-        return _func
+        return wrap
     return wrapper
 
 
@@ -45,10 +45,7 @@ class JAVBus(LibraryAgent):
         except AttributeError:
             Log("an exception occurred: " + url)
             return
-        results.append(self.make_result(
-            bango,
-            bango
-        ))
+        results.append(self.make_result(bango, bango))
         return results
 
     def get_metadata(self, metadata_id):
