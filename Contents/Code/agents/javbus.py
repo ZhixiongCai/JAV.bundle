@@ -119,7 +119,7 @@ class JAVBus(LibraryAgent):
     def get_posters(self, data):
         ele = data.find("a", "bigImage")
         link = "https://javbus.com" + ele["href"]
-        return [link.replace("_b", "")]
+        return [link.replace("_b", "").replace("cover", "thumb")]
 
     @with_default(None)
     def get_thumbs(self, data):
