@@ -39,7 +39,7 @@ class TokyoHot(StudioAgent, QueryAgent):
         for product in products:
             title_ele = product.find("div", "title")
             url = product["href"]
-            match = re.match("/product/(\d+)/", url)
+            match = re.match("/product/(n?\d+)/", url)
             rv.append(self.make_result(
                 match.group(1),
                 title_ele.text.strip(),
