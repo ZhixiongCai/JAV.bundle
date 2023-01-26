@@ -29,7 +29,7 @@ class JAVLibrary(LibraryAgent):
         }
         resp = self.session.get(url, params=params)
         if not resp.ok:
-            return
+            return results
         html = resp.content.decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
         if soup.find("div", "videos"):

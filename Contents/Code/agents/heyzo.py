@@ -51,7 +51,6 @@ class Heyzo(StudioAgent, QueryAgent):
             "roles": self.get_roles(data),
             "studio": self.get_studio(),
             "genres": self.get_genres(data),
-            "rating": self.get_rating(data),
             "collections": self.get_collections(data),
             "summary": self.get_summary(data),
             "posters": self.get_posters(movie_id),
@@ -105,11 +104,6 @@ class Heyzo(StudioAgent, QueryAgent):
             item.text.strip()
             for item in ele.findAll("a")
         ]
-
-    def get_rating(self, data):
-        ele = self.find_ele(data, "table-estimate")
-        if ele:
-            return float(ele.find("span", {"itemprop": "ratingValue"}).text.strip())*2
 
     def get_summary(self, data):
         ele = data.find("tr", "table-memo")
