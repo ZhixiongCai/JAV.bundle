@@ -36,7 +36,8 @@ class JAVBus(LibraryAgent):
         results = []
         url = "https://www.javbus.com/" + keyword
         resp = self.session.get(url)
-        resp.raise_for_status()
+        if not resp.ok:
+            return
         html = resp.content.decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
         try:

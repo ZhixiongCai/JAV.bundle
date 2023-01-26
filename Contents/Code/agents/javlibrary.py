@@ -28,7 +28,8 @@ class JAVLibrary(LibraryAgent):
             "keyword": keyword
         }
         resp = self.session.get(url, params=params)
-        resp.raise_for_status()
+        if not resp.ok:
+            return
         html = resp.content.decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
         if soup.find("div", "videos"):
