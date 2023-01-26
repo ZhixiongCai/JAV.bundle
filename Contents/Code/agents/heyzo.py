@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from .base import QueryAgent, StudioAgent
+from .util import with_default
 
 
 class Heyzo(StudioAgent, QueryAgent):
@@ -98,6 +99,7 @@ class Heyzo(StudioAgent, QueryAgent):
             rv.append(ele.find("a").text.strip())
         return rv
 
+    @with_default([])
     def get_genres(self, data):
         ele = data.find("ul", "tag-keyword-list")
         return [

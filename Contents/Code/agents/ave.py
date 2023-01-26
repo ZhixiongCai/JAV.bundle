@@ -170,7 +170,9 @@ class AVE(LibraryAgent):
         ele = data.find("div", {"id": "PlayerCover"})
         if ele:
             return [
-                ele.find("img")["src"]
+                img["src"]
+                for img in data.find_all("img", "img-fluid")
+                if "bigcover" in img("src")
             ]
         return []
 

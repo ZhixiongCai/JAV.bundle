@@ -8,17 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from .base import ID_PATTERN, LibraryAgent
-
-
-def with_default(default):
-    def wrapper(func):
-        def wrap(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                return default
-        return wrap
-    return wrapper
+from .util import with_default
 
 
 class JAVBus(LibraryAgent):
