@@ -56,7 +56,8 @@ class AVE(LibraryAgent):
         for product in products:
             title_ele = product.find("p", "product-title").find("a")
             url = title_ele["href"]
-            match = re.search("product_id=(\d+)", url)
+            match = re.search(
+                "www.aventertainments.com/(\d+)/2/29/product_lists", url)
             title = title_ele.text.strip()
 
             if re.search(ID_PATTERN, keyword):

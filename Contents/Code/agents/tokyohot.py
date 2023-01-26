@@ -29,7 +29,7 @@ class TokyoHot(StudioAgent, QueryAgent):
         params = {
             "q": keyword
         }
-        resp = self.session.get(url, params=params)
+        resp = self.session.get(url, params=params, verify=False)
         resp.raise_for_status()
         html = resp.content.decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
@@ -158,13 +158,13 @@ class TokyoHot(StudioAgent, QueryAgent):
     def session(self):
         if not hasattr(self, "_session"):
             session = requests.session()
-            session.get("https://my.tokyo-hot.com/index?lang=ja")
+            session.get("https://my.tokyo-hot.com/index?lang=ja", verify=False)
             setattr(self, "_session", session)
         return getattr(self, "_session")
 
     def crawl(self, movie_id):
         url = "https://my.tokyo-hot.com/product/{0}/"
-        resp = self.session.get(url.format(movie_id))
+        resp = self.session.get(url.format(movie_id), verify=False)
         resp.raise_for_status()
         html = resp.content.decode("utf-8")
         return BeautifulSoup(html, "html.parser")
