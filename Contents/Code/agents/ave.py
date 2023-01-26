@@ -167,14 +167,11 @@ class AVE(LibraryAgent):
         ]
 
     def get_thumbs(self, data):
-        ele = data.find("div", {"id": "PlayerCover"})
-        if ele:
-            return [
-                img["src"]
-                for img in data.find_all("img", "img-fluid")
-                if "bigcover" in img("src")
-            ]
-        return []
+        return [
+            img["src"]
+            for img in data.find_all("img", "img-fluid")
+            if "bigcover" in img["src"]
+        ]
 
     def crawl(self, agent_id):
         url = "https://www.aventertainments.com/product_lists.aspx"
